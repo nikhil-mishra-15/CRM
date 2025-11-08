@@ -1,0 +1,125 @@
+.contact-page {
+    width: 100%;
+    min-height: calc(100vh - 48px);
+  }
+  
+  .main-content {
+    width: 100%;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .content-header {
+    padding: 24px 28px;
+    border-bottom: 2px solid #f3f4f6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .content-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+  
+  .stats-container {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  
+  .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #f9fafb;
+    border-radius: 8px;
+  }
+  
+  .stat-label {
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: 500;
+  }
+  
+  .stat-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+  
+  .loading-container,
+  .error-container,
+  .empty-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    text-align: center;
+  }
+  
+  .loading-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #f3f4f6;
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .loading-text,
+  .error-text,
+  .empty-text {
+    margin-top: 16px;
+    font-size: 16px;
+    color: #6b7280;
+    font-weight: 500;
+  }
+  
+  .error-container {
+    color: #dc2626;
+  }
+  
+  @media (max-width: 768px) {
+    .content-header {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 20px;
+    }
+  
+    .stats-container {
+      width: 100%;
+    }
+  
+    .stat-item {
+      flex: 1;
+      min-width: 100px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .content-title {
+      font-size: 18px;
+    }
+  
+    .stats-container {
+      flex-direction: column;
+    }
+  
+    .stat-item {
+      width: 100%;
+    }
+  }
+  

@@ -1,0 +1,221 @@
+.admin-page {
+  min-height: 100vh;
+  background: #f9fafb;
+}
+
+.admin-welcome {
+  font-size: 16px;
+  color: #6b7280;
+  margin-top: 8px;
+}
+
+.refresh-button {
+  padding: 8px 16px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.refresh-button:hover {
+  background: #5568d3;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.refresh-button:active {
+  transform: translateY(0);
+}
+
+.main-content {
+  width: 100%;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.content-header {
+  padding: 24px 28px;
+  border-bottom: 2px solid #f3f4f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.content-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.employees-list-container {
+  padding: 24px 28px;
+}
+
+.employees-table-wrapper {
+  overflow-x: auto;
+}
+
+.employees-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.employees-table thead {
+  background: #f9fafb;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.employees-table th {
+  padding: 16px 24px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 700;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.employees-table tbody tr {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.2s ease;
+}
+
+.employees-table tbody tr:hover {
+  background-color: #fafbfc;
+}
+
+.employees-table td {
+  padding: 16px 24px;
+}
+
+.employee-name {
+  font-weight: 600;
+  color: #1a1a1a;
+  font-size: 15px;
+}
+
+.employee-calls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  color: #1a1a1a;
+  font-size: 15px;
+}
+
+.calls-value {
+  color: #667eea;
+}
+
+.calls-separator {
+  color: #9ca3af;
+  margin: 0 2px;
+}
+
+.calls-total {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.employee-stat {
+  font-weight: 600;
+  color: #1a1a1a;
+  font-size: 15px;
+}
+
+.no-employees {
+  text-align: center;
+  color: #9ca3af;
+  padding: 40px 20px;
+  font-size: 14px;
+}
+
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #f3f4f6;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text,
+.error-text {
+  margin-top: 16px;
+  font-size: 16px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.error-container {
+  color: #dc2626;
+}
+
+@media (max-width: 768px) {
+  .content-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .employees-list-container {
+    padding: 20px;
+  }
+
+  .employees-table th,
+  .employees-table td {
+    padding: 12px 16px;
+  }
+
+  .employees-table th {
+    font-size: 11px;
+  }
+
+  .employee-name,
+  .employee-calls,
+  .employee-stat {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-title {
+    font-size: 18px;
+  }
+
+  .employees-table {
+    min-width: 500px;
+  }
+
+  .employees-table th,
+  .employees-table td {
+    padding: 10px 12px;
+  }
+}
