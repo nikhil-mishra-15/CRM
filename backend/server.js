@@ -17,13 +17,12 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(cors({
   origin: [
-    'https://singular-truffle-029dd9.netlify.app/ ', // Your Netlify frontend
-    'https://backend-al73.onrender.com', // Your Render backend URL
+    'https://singular-truffle-029dd9.netlify.app/', // Your Netlify frontend
     'http://localhost:3000', // Local development
     'http://localhost:5173'  // If using Vite
   ],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 }));
 
