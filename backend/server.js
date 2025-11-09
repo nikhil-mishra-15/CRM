@@ -17,7 +17,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(cors({
   origin: [
-    'https://singular-truffle-029dd9.netlify.app/', // Your Netlify frontend
+    'https://singular-truffle-029dd9.netlify.app/',
+    'https://backend-al73.onrender.com',// Your Netlify frontend
     'http://localhost:3000', // Local development
     'http://localhost:5173'  // If using Vite
   ],
