@@ -15,27 +15,31 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
 const allowedOrigins = [
   "https://singular-truffle-029dd9.netlify.app",
   "http://localhost:3000",
   "http://localhost:5173"
 ];
 
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type,Authorization,Accept");
-  next();
-});
+// Use cors middleware properly
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
+}));
 
-// Handle preflight specifically
-app.options("*", (req, res) => {
-  res.sendStatus(200);
-});
+// Remove the manual CORS middleware and options handler - cors package handles it automatically
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
