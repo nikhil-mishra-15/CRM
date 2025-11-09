@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_MONGODB_API_URL || 'https://backend-al73.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_MONGODB_API_URL || 'https://backend-al73.onrender.com/api';
 
 // Login user
 export async function loginUser(email, password) {
