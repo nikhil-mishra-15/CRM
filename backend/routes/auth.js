@@ -39,13 +39,10 @@ router.post('/signup', async (req, res) => {
       ? role
       : 'employee';
 
-    // ✅ HASH PASSWORD HERE
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     const user = new User({
       name,
       email,
-      password: hashedPassword,
+      password,
       role: userRole
     });
 
