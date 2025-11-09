@@ -15,6 +15,17 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+app.use(cors({
+  origin: [
+    'https://singular-truffle-029dd9.netlify.app/ ', // Your Netlify frontend
+    'https://backend-al73.onrender.com', // Your Render backend URL
+    'http://localhost:3000', // Local development
+    'http://localhost:5173'  // If using Vite
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
+}));
 
 // Middleware
 app.use(cors());
