@@ -1,7 +1,3 @@
-// MongoDB client configuration for frontend
-// This assumes you have a backend API endpoint that connects to MongoDB
-// For direct MongoDB connection from frontend, consider using MongoDB Realm SDK
-
 const API_BASE_URL = import.meta.env.VITE_MONGODB_API_URL || 'https://backend-al73.onrender.com/api';
 
 // Helper function to get auth token from localStorage
@@ -216,25 +212,86 @@ export const mongodb = {
     }
   },
 
-  // Subscribe to real-time updates (using WebSocket or Server-Sent Events)
-  // Note: This requires backend support for real-time updates
+  // Subscribe to real-time updates using Server-Sent Events (SSE)
+  // Note: This requires authentication token to be passed
   subscribeToContacts(callback) {
-    // Implementation depends on your backend setup
-    // This could use WebSocket, Server-Sent Events, or polling
-    const eventSource = new EventSource(`${API_BASE_URL}/contacts/stream`);
-    
-    eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      callback(data);
+    const token = getAuthToken();
+    if (!token) {
+      console.error('No authentication token found');
+      return () => {};
+    }
+
+    // Use fetch-based SSE reader since EventSource doesn't support custom headers
+    let abortController = new AbortController();
+    let isActive = true;
+
+    const startStream = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/contacts/stream`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'text/event-stream'
+          },
+          signal: abortController.signal
+        });
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            handleAuthError(response);
+            return;
+          }
+          throw new Error(`Stream failed: ${response.status}`);
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (isActive) {
+          const { done, value } = await reader.read();
+          
+          if (done) {
+            break;
+          }
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.slice(6));
+                callback(data);
+              } catch (error) {
+                console.error('Error parsing SSE data:', error);
+              }
+            }
+          }
+        }
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          // Stream was intentionally closed
+          return;
+        }
+        console.error('Error in contact stream:', error);
+        // Attempt to reconnect after 3 seconds
+        if (isActive) {
+          setTimeout(() => {
+            if (isActive) {
+              startStream();
+            }
+          }, 3000);
+        }
+      }
     };
 
-    eventSource.onerror = (error) => {
-      console.error('Error in contact stream:', error);
-      eventSource.close();
-    };
+    startStream();
 
+    // Return cleanup function
     return () => {
-      eventSource.close();
+      isActive = false;
+      abortController.abort();
     };
   },
 };
@@ -290,4 +347,5 @@ export const mongodbRealm = {
 */
 
 export default mongodb;
+
 
