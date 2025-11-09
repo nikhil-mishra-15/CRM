@@ -4,8 +4,57 @@ import { authenticate } from '../middleware/auth.js';
 
 const router = express.Router();
 
+// Store active SSE connections
+const activeConnections = new Set();
+
+// Broadcast function to send updates to all connected clients
+const broadcastToClients = (data) => {
+  const message = `data: ${JSON.stringify(data)}\n\n`;
+  activeConnections.forEach((res) => {
+    try {
+      res.write(message);
+    } catch (error) {
+      // Connection closed, remove it
+      activeConnections.delete(res);
+    }
+  });
+};
+
 // All routes require authentication
 router.use(authenticate);
+
+// GET /contacts/stream - Server-Sent Events for real-time updates
+router.get('/stream', (req, res) => {
+  // Set SSE headers
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no'); // Disable buffering for nginx
+
+  // Add this connection to active connections
+  activeConnections.add(res);
+
+  // Send initial connection message
+  res.write(`data: ${JSON.stringify({ type: 'connected', message: 'Stream connected' })}\n\n`);
+
+  // Send heartbeat every 30 seconds to keep connection alive
+  const heartbeat = setInterval(() => {
+    try {
+      res.write(`data: ${JSON.stringify({ type: 'heartbeat', timestamp: Date.now() })}\n\n`);
+    } catch (error) {
+      clearInterval(heartbeat);
+      activeConnections.delete(res);
+      res.end();
+    }
+  }, 30000);
+
+  // Handle client disconnect
+  req.on('close', () => {
+    clearInterval(heartbeat);
+    activeConnections.delete(res);
+    res.end();
+  });
+});
 
 // GET all contacts - filtered by user (admins see all)
 router.get('/', async (req, res) => {
@@ -82,6 +131,13 @@ router.post('/', async (req, res) => {
     });
 
     const newContact = await contact.save();
+    
+    // Broadcast new contact to all connected clients
+    broadcastToClients({
+      type: 'contact_created',
+      contact: newContact
+    });
+    
     res.status(201).json(newContact);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -135,6 +191,12 @@ router.patch('/:id', async (req, res) => {
       { new: true, runValidators: true }
     );
 
+    // Broadcast update to all connected clients
+    broadcastToClients({
+      type: 'contact_updated',
+      contact: updatedContact
+    });
+
     res.json(updatedContact);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -163,6 +225,12 @@ router.put('/:id', async (req, res) => {
       { new: true, runValidators: true }
     );
 
+    // Broadcast update to all connected clients
+    broadcastToClients({
+      type: 'contact_updated',
+      contact: updatedContact
+    });
+
     res.json(updatedContact);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -184,6 +252,13 @@ router.delete('/:id', async (req, res) => {
     }
     
     await Contact.findByIdAndDelete(req.params.id);
+    
+    // Broadcast deletion to all connected clients
+    broadcastToClients({
+      type: 'contact_deleted',
+      contactId: req.params.id
+    });
+    
     res.json({ message: 'Contact deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
