@@ -1,3 +1,7 @@
+// MongoDB client configuration for frontend
+// This assumes you have a backend API endpoint that connects to MongoDB
+// For direct MongoDB connection from frontend, consider using MongoDB Realm SDK
+
 const API_BASE_URL = import.meta.env.VITE_MONGODB_API_URL || 'https://backend-al73.onrender.com/api';
 
 // Helper function to get auth token from localStorage
@@ -347,5 +351,6 @@ export const mongodbRealm = {
 */
 
 export default mongodb;
+
 
 
