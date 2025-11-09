@@ -15,17 +15,27 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-app.use(cors({
-  origin: [
-    'https://singular-truffle-029dd9.netlify.app/',
-    'https://backend-al73.onrender.com',// Your Netlify frontend
-    'http://localhost:3000', // Local development
-    'http://localhost:5173'  // If using Vite
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
-}));
+const allowedOrigins = [
+  "https://singular-truffle-029dd9.netlify.app",
+  "http://localhost:3000",
+  "http://localhost:5173"
+];
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type,Authorization,Accept");
+  next();
+});
+
+// Handle preflight specifically
+app.options("*", (req, res) => {
+  res.sendStatus(200);
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
