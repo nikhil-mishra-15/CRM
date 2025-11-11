@@ -17,7 +17,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const allowedOrigins = [
-  "https://apnagharcrm-gng9b2cdcug4abd8.centralindia-01.azurewebsites.net",
+  "https://crmapna-edhchbc9fhbrbsd6.centralindia-01.azurewebsites.net",
   "http://localhost:3000",
   "http://localhost:5173"
 ];
