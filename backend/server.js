@@ -17,7 +17,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const allowedOrigins = [
-  "https://apncrm-ercmfugwdhf0csge.canadacentral-01.azurewebsites.net/login",
+  "https://apncrm-ercmfugwdhf0csge.canadacentral-01.azurewebsites.net",
   "http://localhost:3000",
   "http://localhost:5173"
 ];
